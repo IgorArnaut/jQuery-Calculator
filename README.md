@@ -1,2 +1,2 @@
-# jQuery-Calculator
+# jQuery Calculator
 A jQuery calculator.
