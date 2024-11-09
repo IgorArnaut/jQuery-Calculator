@@ -1,82 +1,85 @@
-const screen = document.getElementById("screen");
+import $ from "jquery";
+
+const screen = $("#screen");
 
 let num1 = 0;
 let num2 = 0;
 let res = 0;
 let operator = "";
 
-window.addEventListener("load", () => {
-  document.getElementById("minus").addEventListener("click", () => {
-    const num = Number(screen.textContent);
-    screen.textContent = num < 0 ? Math.abs(num) : -num;
-  });
-
-  document.getElementById("bckspc").addEventListener("click", () => {
-    const num = Number(screen.textContent);
-    let newNum = Math.abs(num) > 0 ? Math.floor(Math.abs(num) / 10) : 0;
-    if (num < 0) newNum = -newNum;
-    screen.textContent = newNum;
-  });
-
-  Array.from(document.getElementsByClassName("digit")).forEach((d) => {
-    d.addEventListener("click", function (e) {
-      if (screen.textContent === "0") screen.textContent = e.target.textContent;
-      else screen.textContent += e.target.textContent;
+$(window).on("load", () => {
+  $("#minus").on("click", () => {
+    screen.text(() => {
+      const num = Number(screen.text());
+      return num < 0 ? Math.abs(num) : -num;
     });
   });
 
-  Array.from(document.getElementsByClassName("special")).forEach((s) => {
-    s.addEventListener("click", function (e) {
-      const num = Number(screen.textContent);
+  $("#bckspc").on("click", () => {
+    screen.text(() => {
+      const num = Number(screen.text());
+      let newNum = Math.abs(num) > 0 ? Math.floor(Math.abs(num) / 10) : 0;
+      if (num < 0) return -newNum;
+      return newNum;
+    });
+  });
 
-      switch (e.target.textContent) {
+  $(".digit").on("click", function (e) {
+    if (screen.text() === "0") screen.text($(e.target).text());
+    else screen.append($(e.target).text());
+  });
+
+  $(".special").on("click", function (e) {
+    screen.text(() => {
+      const num = Number(screen.text());
+
+      switch ($(e.target).text()) {
         case "1/x":
-          screen.textContent = 1.0 / num;
-          break;
+          return 1.0 / num;
         case "x^2":
-          screen.textContent = num * num;
-          break;
+          return num * num;
         case "sqrt(x)":
-          screen.textContent = Math.sqrt(num);
+          return Math.sqrt(num);
+      }
+    });
+  });
+
+  $(".operator").on("click", function (e) {
+    screen.text(() => {
+      if (operator === "") {
+        operator = $(e.target).text();
+        num1 = Number(screen.text());
+        return 0;
+      }
+    });
+  });
+
+  $("#equals").on("click", () => {
+    screen.text(() => {
+      if (num1 === 0) return;
+      if (operator === "") return;
+
+      num2 = Number(screen.text());
+      res = 0;
+
+      switch (operator) {
+        case "+":
+          res = num1 + num2;
+          break;
+        case "-":
+          res = num1 - num2;
+          break;
+        case "*":
+          res = num1 * num2;
+          break;
+        case "/":
+          res = num1 / num2;
           break;
       }
+
+      num1 = res;
+      operator = "";
+      return res;
     });
-  });
-
-  Array.from(document.getElementsByClassName("operator")).forEach((o) => {
-    o.addEventListener("click", function (e) {
-      if (operator === "") {
-        operator = e.target.textContent;
-        num1 = Number(screen.textContent);
-        screen.textContent = 0;
-      }
-    });
-  });
-
-  document.getElementById("equals").addEventListener("click", () => {
-    if (num1 === 0) return;
-    if (operator === "") return;
-
-    num2 = Number(screen.textContent);
-    res = 0;
-
-    switch (operator) {
-      case "+":
-        res = num1 + num2;
-        break;
-      case "-":
-        res = num1 - num2;
-        break;
-      case "*":
-        res = num1 * num2;
-        break;
-      case "/":
-        res = num1 / num2;
-        break;
-    }
-
-    screen.textContent = res;
-    num1 = res;
-    operator = "";
   });
 });
