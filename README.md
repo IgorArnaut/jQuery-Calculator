@@ -1,2 +1,2 @@
-# JS Clock
-A JavaScript clock.
+# jQuery Calculator
+A jQuery calculator.
